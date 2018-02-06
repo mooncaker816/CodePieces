@@ -1,9 +1,28 @@
 package fibo
 
 import (
+	"fmt"
 	"testing"
+	"time"
 )
 
+func TestFibo1(t *testing.T) {
+	start := time.Now()
+	fibo1(1000000)
+	fmt.Println(time.Now().Sub(start))
+}
+
+func TestFibo2(t *testing.T) {
+	start := time.Now()
+	fibo2(1000000)
+	fmt.Println(time.Now().Sub(start))
+}
+
+func TestFibo3(t *testing.T) {
+	start := time.Now()
+	fibo3(1000000)
+	fmt.Println(time.Now().Sub(start))
+}
 func BenchmarkFibo1(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
