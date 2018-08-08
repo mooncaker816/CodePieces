@@ -97,5 +97,26 @@ func main() {
 		c.model = "Benz"
 	}()
 
+	func() {
+		s := NewSlice()
+		// [Min] s.Add(1) 当作参数率先计算，打印出 1
+		// [Min] 最终打印出 132
+		defer s.Add(1).Add(2)
+		s.Add(3)
+	}()
+
+	fmt.Println()
+
 	exitBeforeDefer()
+}
+
+type Slice []int
+
+func NewSlice() Slice {
+	return make(Slice, 0)
+}
+func (s *Slice) Add(elem int) *Slice {
+	*s = append(*s, elem)
+	fmt.Print(elem)
+	return s
 }
