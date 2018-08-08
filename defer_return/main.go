@@ -5,13 +5,6 @@ import (
 	"os"
 )
 
-func main() {
-	fmt.Println(nonNamedReturnValue())    // 0
-	fmt.Println(namedReturnValue())       // 2
-	fmt.Println(*nonNamedReturnPointer()) // 2
-	exitBeforeDefer()
-}
-
 // [Min] defer 无法访问未命名的返回值
 func nonNamedReturnValue() int {
 	fmt.Println("nonNamedReturnValue():")
@@ -69,4 +62,40 @@ func exitBeforeDefer() {
 	}()
 
 	os.Exit(1)
+}
+
+type car struct {
+	model string
+}
+
+func (c car) PrintModel() {
+	fmt.Println(c.model)
+}
+
+func (c *car) PrintModel2() {
+	fmt.Println(c.model)
+}
+
+func main() {
+	fmt.Println(nonNamedReturnValue())    // 0
+	fmt.Println(namedReturnValue())       // 2
+	fmt.Println(*nonNamedReturnPointer()) // 2
+
+	// [Min] 方法的本质就是函数，c 相当于函数 PrintModel 的第一个参数，
+	// [Min] defer 调用时，参数会被计算出来，所以输出 BMW
+	func() {
+		c := car{model: "BMW"}
+		defer c.PrintModel()
+		c.model = "Benz"
+	}()
+
+	// [Min] 方法的接受者是指针，所以传进 PrintModel2 的参数是指向 c 的一个指针
+	// [Min] c 的值修改后，参数的值也被修改，所以输出 Benz
+	func() {
+		c := car{model: "BMW"}
+		defer c.PrintModel2()
+		c.model = "Benz"
+	}()
+
+	exitBeforeDefer()
 }
